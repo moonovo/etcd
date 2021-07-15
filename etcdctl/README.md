@@ -353,19 +353,19 @@ put key2 "this is\na multi-line\nvalue"
 
 ### COMPACTION [options] \<revision\>
 
-COMPACTION discards all etcd event history prior to a given revision. Since etcd uses a multiversion concurrency control
-model, it preserves all key updates as event history. When the event history up to some revision is no longer needed,
-all superseded keys may be compacted away to reclaim storage space in the etcd backend database.
+COMPACTION 丢弃指定版本之前的所有etcd事件历史记录。 由于 etcd 使用多版本并发控制(mvcc)模式，
+它将所有key的更新保留为事件历史记录。 当不再需要某些修订的事件历史记录时，
+可以压缩所有被取代的键以回收etcd后端数据库中的存储空间。
 
 RPC: Compact
 
 #### Options
 
-- physical -- 'true' to wait for compaction to physically remove all old revisions
+- physical -- 'true' 等待物理上移除所有旧版本的压缩
 
 #### Output
 
-Prints the compacted revision.
+输出已压缩的版本号
 
 #### Example
 ```bash
@@ -375,37 +375,37 @@ Prints the compacted revision.
 
 ### WATCH [options] [key or prefix] [range_end] [--] [exec-command arg1 arg2 ...]
 
-Watch watches events stream on keys or prefixes, [key or prefix, range_end) if range_end is given. The watch command runs until it encounters an error or is terminated by the user.  If range_end is given, it must be lexicographically greater than key or "\x00".
+Watch 在多个key、 多个前缀、如果指定了range_end，在[key or prefix, range_end) 范围内watch事件流。watch 命令会一直运行，直到遇到错误或被用户终止。 如果给出 range_end，它必须按字典顺序大于key或"\x00"。
 
 RPC: Watch
 
 #### Options
 
-- hex -- print out key and value as hex encode string
+- hex -- 以十六进制编码字符串打印key和value
 
-- interactive -- begins an interactive watch session
+- interactive -- 开启交互式watch会话
 
-- prefix -- watch on a prefix if prefix is set.
+- prefix -- 如果前缀设置了，在此前缀上watch
 
-- prev-kv -- get the previous key-value pair before the event happens.
+- prev-kv -- 在事件发生前，获取上一个kye-value键值对
 
-- rev -- the revision to start watching. Specifying a revision is useful for observing past events.
+- rev -- 从某个版本开始watch。想观察过去的事件指定版本是很有用的。
 
-#### Input format
+#### 输入格式
 
-Input is only accepted for interactive mode.
+仅在交互式下接受输入。
 
 ```
 watch [options] <key or prefix>\n
 ```
 
-#### Output
+#### 输出
 
 \<event\>[\n\<old_key\>\n\<old_value\>]\n\<key\>\n\<value\>\n\<event\>\n\<next_key\>\n\<next_value\>\n...
 
-#### Examples
+#### 样例
 
-##### Non-interactive
+##### 非交互式
 
 ```bash
 ./etcdctl watch foo
@@ -421,7 +421,7 @@ ETCDCTL_WATCH_KEY=foo ./etcdctl watch
 # bar
 ```
 
-Receive events and execute `echo watch event received`:
+接收到事件时执行 `echo watch event received`命令:
 
 ```bash
 ./etcdctl watch foo -- echo watch event received
@@ -431,7 +431,7 @@ Receive events and execute `echo watch event received`:
 # watch event received
 ```
 
-Watch response is set via `ETCD_WATCH_*` environmental variables:
+通过设置`ETCD_WATCH_*`环境变量观察响应:
 
 ```bash
 ./etcdctl watch foo -- sh -c "env | grep ETCD_WATCH_"
@@ -445,7 +445,7 @@ Watch response is set via `ETCD_WATCH_*` environmental variables:
 # ETCD_WATCH_VALUE="bar"
 ```
 
-Watch with environmental variables and execute `echo watch event received`:
+使用环境变量Watch并执行`echo watch event received`:
 
 ```bash
 export ETCDCTL_WATCH_KEY=foo
@@ -466,7 +466,7 @@ export ETCDCTL_WATCH_RANGE_END=foox
 # watch event received
 ```
 
-##### Interactive
+##### 交互式
 
 ```bash
 ./etcdctl watch -i
@@ -480,7 +480,7 @@ watch foo
 # bar
 ```
 
-Receive events and execute `echo watch event received`:
+接收到事件时执行 `echo watch event received`:
 
 ```bash
 ./etcdctl watch -i
@@ -491,7 +491,7 @@ watch foo -- echo watch event received
 # watch event received
 ```
 
-Watch with environmental variables and execute `echo watch event received`:
+使用环境变量Watch并执行`echo watch event received`:
 
 ```bash
 export ETCDCTL_WATCH_KEY=foo
@@ -516,20 +516,19 @@ watch -- echo watch event received
 
 ### LEASE \<subcommand\>
 
-LEASE provides commands for key lease management.
+LEASE 提供了key的租约管理命令。
 
 ### LEASE GRANT \<ttl\>
 
-LEASE GRANT creates a fresh lease with a server-selected time-to-live in seconds
-greater than or equal to the requested TTL value.
+LEASE GRANT 创建一个新的租约，服务器设置其生存时间（单位秒）大于或等于请求的 TTL 值。
 
 RPC: LeaseGrant
 
-#### Output
+#### 输出
 
-Prints a message with the granted lease ID.
+输出带有租约ID的信息
 
-#### Example
+#### 样例
 
 ```bash
 ./etcdctl lease grant 10
@@ -538,15 +537,15 @@ Prints a message with the granted lease ID.
 
 ### LEASE REVOKE \<leaseID\>
 
-LEASE REVOKE destroys a given lease, deleting all attached keys.
+LEASE REVOKE 废除给定的租约，也删除所有附加的key。
 
 RPC: LeaseRevoke
 
-#### Output
+#### 输出
 
-Prints a message indicating the lease is revoked.
+输出租约已被废除的信息
 
-#### Example
+#### 样例
 
 ```bash
 ./etcdctl lease revoke 32695410dcc0ca06
@@ -555,17 +554,17 @@ Prints a message indicating the lease is revoked.
 
 ### LEASE TIMETOLIVE \<leaseID\> [options]
 
-LEASE TIMETOLIVE retrieves the lease information with the given lease ID.
+LEASE TIMETOLIVE 使用给定的租约id查找租约信息
 
 RPC: LeaseTimeToLive
 
 #### Options
 
-- keys -- Get keys attached to this lease
+- keys -- 获取附加在该租约上的key
 
 #### Output
 
-Prints lease information.
+输出租约信息。
 
 #### Example
 
@@ -597,15 +596,15 @@ Prints lease information.
 
 ### LEASE LIST
 
-LEASE LIST lists all active leases.
+LEASE LIST 列出所有活动中的租约
 
 RPC: LeaseLeases
 
 #### Output
 
-Prints a message with a list of active leases.
+打印活动中的租约信息。
 
-#### Example
+#### 样例
 
 ```bash
 ./etcdctl lease grant 10
@@ -617,15 +616,15 @@ Prints a message with a list of active leases.
 
 ### LEASE KEEP-ALIVE \<leaseID\>
 
-LEASE KEEP-ALIVE periodically refreshes a lease so it does not expire.
+LEASE KEEP-ALIVE 定期刷新租约，使其不会过期。
 
 RPC: LeaseKeepAlive
 
-#### Output
+#### 输出
 
-Prints a message for every keep alive sent or prints a message indicating the lease is gone.
+输出每个keey-alive的发送信息或者租约已过期的信息。
 
-#### Example
+#### 样例
 ```bash
 ./etcdctl lease keep-alive 32695410dcc0ca0
 # lease 32695410dcc0ca0 keepalived with TTL(100)

@@ -255,18 +255,18 @@ RPC: DeleteRange
 
 ### TXN [options]
 
-TXN reads multiple etcd requests from standard input and applies them as a single atomic transaction.
-A transaction consists of list of conditions, a list of requests to apply if all the conditions are true, and a list of requests to apply if any condition is false.
+TXN 从标准输入读取多个 etcd 请求并在一个原子性事务中执行他们。
+事务由条件列表、所有条件为真时要执行的请求列表以及任意条件为假时要执行的请求列表组成。
 
 RPC: Txn
 
 #### Options
 
-- hex -- print out keys and values as hex encoded strings.
+- hex -- 将key和value以十六进制编码字符串打印。
 
-- interactive -- input transaction with interactive prompting.
+- interactive -- 交互式输入事务。
 
-#### Input Format
+#### 输入格式
 ```ebnf
 <Txn> ::= <CMP>* "\n" <THEN> "\n" <ELSE> "\n"
 <CMP> ::= (<CMPCREATE>|<CMPMOD>|<CMPVAL>|<CMPVER>|<CMPLEASE>) "\n"
@@ -286,13 +286,13 @@ RPC: Txn
 <LEASE> ::= "\""[0-9]+\""
 ```
 
-#### Output
+#### 输出
 
-`SUCCESS` if etcd processed the transaction success list, `FAILURE` if etcd processed the transaction failure list. Prints the output for each command in the executed request list, each separated by a blank line.
+`SUCCESS` 表示etcd处理了事务成功列表, `FAILURE` 表示etcd处理了事务成功列表. 打印每个请求的输出，以空行分隔。
 
-#### Examples
+#### 样例
 
-txn in interactive mode:
+txn交互式:
 ```bash
 ./etcdctl txn -i
 # compares:
@@ -332,7 +332,7 @@ put key2 "some extra key"
 
 #### Remarks
 
-When using multi-line values within a TXN command, newlines must be represented as `\n`. Literal newlines will cause parsing failures. This differs from other commands (such as PUT) where the shell will convert literal newlines for us. For example:
+在TXN命令中使用多行值时，换行符必须表示为`\n`。 文字换行符将导致解析失败。 这与其他命令（例如 PUT）不同，在这些命令中，shell 将为我们转换文字换行符。 例如：
 
 ```bash
 ./etcdctl txn <<<'mod("key1") > "0"

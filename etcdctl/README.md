@@ -194,23 +194,22 @@ If any key or value contains non-printable characters or control characters, sim
 
 ### DEL [options] \<key\> [range_end]
 
-Removes the specified key or range of keys [key, range_end) if range_end is given.
-
+删除指定的key, 如果给出 range_end，删除[key, range_end)之间的所有key。
 RPC: DeleteRange
 
 #### Options
 
-- prefix -- delete keys by matching prefix
+- prefix -- 通过匹配前缀删除键
 
-- prev-kv -- return deleted key-value pairs
+- prev-kv -- 返回已删除的key-value键值对
 
-- from-key -- delete keys that are greater than or equal to the given key using byte compare
+- from-key -- 删除大于等于指定key的所有key，使用字节排序
 
-#### Output
+#### 输出
 
-Prints the number of keys that were removed in decimal if DEL succeeded.
+如果 DEL 成功，则以十进制打印删除的key的数量。
 
-#### Examples
+#### 样例
 
 ```bash
 ./etcdctl put foo bar

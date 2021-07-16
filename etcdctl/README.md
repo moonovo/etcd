@@ -1149,11 +1149,12 @@ ELECT 仅在被信号终止并且撤销了它的候选资格或领导权（如�
 If a candidate is abnormally terminated, election rogress may be delayed by up to the default lease length of 60 seconds.
 如果候选者是被异常终止的，选举进程可能会延迟最多60秒(默认租约时长)。
 
-## Authentication commands
+## 身份认证命令
 
 ### AUTH \<enable or disable\>
 
 `auth enable` activates authentication on an etcd cluster and `auth disable` deactivates. When authentication is enabled, etcd checks all requests for appropriate authorization.
+`auth enable` 启用身份认证， `auth disable`禁用身份认证. 启用身份验证后，etcd 会检查所有请求以获得适当的授权。
 
 RPC: AuthEnable/AuthDisable
 
@@ -1165,8 +1166,8 @@ RPC: AuthEnable/AuthDisable
 
 ```bash
 ./etcdctl user add root
-# Password of root:#type password for root
-# Type password of root again for confirmation:#re-type password for root
+# Password of root:#输入root密码
+# Type password of root again for confirmation:#再次输入root密码
 # User root created
 ./etcdctl user grant-role root root
 # Role root is granted to user root
@@ -1185,11 +1186,11 @@ RPC: AuthEnable/AuthDisable
 
 ### ROLE \<subcommand\>
 
-ROLE is used to specify different roles which can be assigned to etcd user(s).
+ROLE 用于给etcd用户分配不同角色。
 
 ### ROLE ADD \<role name\>
 
-`role add` creates a role.
+`role add` 创建一个角色。
 
 RPC: RoleAdd
 
@@ -1206,13 +1207,13 @@ RPC: RoleAdd
 
 ### ROLE GET \<role name\>
 
-`role get` lists detailed role information.
+`role get` 列出详细的角色信息。
 
 RPC: RoleGet
 
 #### Output
 
-Detailed role information.
+详细的角色信息。
 
 #### Examples
 
@@ -1227,7 +1228,7 @@ Detailed role information.
 
 ### ROLE DELETE \<role name\>
 
-`role delete` deletes a role.
+`role delete` 删除角色。
 
 RPC: RoleDelete
 
@@ -1244,13 +1245,13 @@ RPC: RoleDelete
 
 ### ROLE LIST \<role name\>
 
-`role list` lists all roles in etcd.
+`role list` 列出etcd中所有角色
 
 RPC: RoleList
 
 #### Output
 
-A role per line.
+每行一个角色。
 
 #### Examples
 
@@ -1263,15 +1264,15 @@ A role per line.
 
 ### ROLE GRANT-PERMISSION [options] \<role name\> \<permission type\> \<key\> [endkey]
 
-`role grant-permission` grants a key to a role.
+`role grant-permission` 给一个角色授权一个key
 
 RPC: RoleGrantPermission
 
 #### Options
 
-- from-key -- grant a permission of keys that are greater than or equal to the given key using byte compare
+- from-key -- 授予大于等于指定key的所有key权限，使用字节排序
 
-- prefix -- grant a prefix permission
+- prefix -- 给一个前缀授权
 
 #### Output
 
@@ -1280,13 +1281,14 @@ RPC: RoleGrantPermission
 #### Examples
 
 Grant read and write permission on the key `foo` to role `myrole`:
+授予角色`myrole`对key `foo`的读写权限：
 
 ```bash
 ./etcdctl --user=root:123 role grant-permission myrole readwrite foo
 # Role myrole updated
 ```
 
-Grant read permission on the wildcard key pattern `foo/*` to role `myrole`:
+授予角色`myrole`对`foo/*`通配符的读写权限
 
 ```bash
 ./etcdctl --user=root:123 role grant-permission --prefix myrole readwrite foo/
@@ -1295,19 +1297,19 @@ Grant read permission on the wildcard key pattern `foo/*` to role `myrole`:
 
 ### ROLE REVOKE-PERMISSION \<role name\> \<permission type\> \<key\> [endkey]
 
-`role revoke-permission` revokes a key from a role.
+`role revoke-permission` 撤销角色对一个key的权限。
 
 RPC: RoleRevokePermission
 
 #### Options
 
-- from-key -- revoke a permission of keys that are greater than or equal to the given key using byte compare
+- from-key -- 撤销大于等于指定key的所有key权限，使用字节排序
 
-- prefix -- revoke a prefix permission
+- prefix -- 撤销一个前缀的权限
 
 #### Output
 
-`Permission of key <key> is revoked from role <role name>` for single key. `Permission of range [<key>, <endkey>) is revoked from role <role name>` for a key range. Exit code is zero.
+对于单个key输出`Permission of key <key> is revoked from role <role name>` . 范围key输出`Permission of range [<key>, <endkey>) is revoked from role <role name>`。 退出码为0。
 
 #### Examples
 
@@ -1318,7 +1320,7 @@ RPC: RoleRevokePermission
 
 ### USER \<subcommand\>
 
-USER provides commands for managing users of etcd.
+USER 提供管理 etcd 用户的命令。
 
 ### USER ADD \<user name or user:password\> [options]
 
@@ -1328,7 +1330,7 @@ RPC: UserAdd
 
 #### Options
 
-- interactive -- Read password from stdin instead of interactive terminal
+- interactive -- 从标准输入读取密码而不是交互式读取
 
 #### Output
 
@@ -1338,24 +1340,24 @@ RPC: UserAdd
 
 ```bash
 ./etcdctl --user=root:123 user add myuser
-# Password of myuser: #type password for my user
-# Type password of myuser again for confirmation:#re-type password for my user
+# Password of myuser: #输入密码
+# Type password of myuser again for confirmation:#再次输入密码
 # User myuser created
 ```
 
 ### USER GET \<user name\> [options]
 
-`user get` lists detailed user information.
+`user get` 列出详细的用户信息。
 
 RPC: UserGet
 
 #### Options
 
-- detail -- Show permissions of roles granted to the user
+- detail -- 显示授予用户的角色权限
 
 #### Output
 
-Detailed user information.
+用户的详细信息。
 
 #### Examples
 
@@ -1367,7 +1369,7 @@ Detailed user information.
 
 ### USER DELETE \<user name\>
 
-`user delete` deletes a user.
+`user delete` 删除一个用户。
 
 RPC: UserDelete
 
@@ -1384,13 +1386,13 @@ RPC: UserDelete
 
 ### USER LIST
 
-`user list` lists detailed user information.
+`user list` 列出详细的用户信息。
 
 RPC: UserList
 
 #### Output
 
-- List of users, one per line.
+- 用户列表，每行一个。
 
 #### Examples
 
@@ -1403,13 +1405,13 @@ RPC: UserList
 
 ### USER PASSWD \<user name\> [options]
 
-`user passwd` changes a user's password.
+`user passwd` 更改用户的密码。
 
 RPC: UserChangePassword
 
 #### Options
 
-- interactive -- if true, read password in interactive terminal
+- interactive -- 如果为真，则在交互式终端中读取密码
 
 #### Output
 
@@ -1419,14 +1421,14 @@ RPC: UserChangePassword
 
 ```bash
 ./etcdctl --user=root:123 user passwd myuser
-# Password of myuser: #type new password for my user
-# Type password of myuser again for confirmation: #re-type the new password for my user
+# Password of myuser: #输入密码
+# Type password of myuser again for confirmation: #再次输入密码
 # Password updated
 ```
 
 ### USER GRANT-ROLE \<user name\> \<role name\>
 
-`user grant-role` grants a role to a user
+`user grant-role` 授予用户角色
 
 RPC: UserGrantRole
 
@@ -1443,7 +1445,7 @@ RPC: UserGrantRole
 
 ### USER REVOKE-ROLE \<user name\> \<role name\>
 
-`user revoke-role` revokes a role from a user
+`user revoke-role` 撤销用户的角色
 
 RPC: UserRevokeRole
 

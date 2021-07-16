@@ -909,8 +909,6 @@ RPC: Alarm
 
 ### DEFRAG [options]
 
-DEFRAG defragments the backend database file for a set of given endpoints while etcd is running, or directly defragments an etcd data directory while etcd is not running. When an etcd member reclaims storage space from deleted and compacted keys, the space is kept in a free list and the database file remains the same size. By defragmenting the database, the etcd member releases this free space back to the file system.
-
 DEFRAG 在etcd运行时对一组endpoint的后端数据库文件进行碎片整理，或者在etcd未运行时直接对etcd数据目录进行碎片整理。 当etcd成员从已删除和压缩的键中回收存储空间时，该空间将保留在空闲列表中，并且数据库文件的大小保持不变。通过对数据库进行碎片整理，etcd成员将空闲空间释放给文件系统。
 
 **请注意，对活动成员进行碎片整理会重建其状态，会阻塞读取和写入数据。**
@@ -1122,19 +1120,19 @@ LOCK 仅在被信号终止并释放锁时才返回零退出代码。
 
 ### ELECT [options] \<election-name\> [proposal]
 
-ELECT participates on a named election. A node announces its candidacy in the election by providing
-a proposal value. If a node wishes to observe the election, ELECT listens for new leaders values.
-Whenever a leader is elected, its proposal is given as output.
+**译者注：此选举功能不是让etcd重新选主，而是客户端为主备架构，以来ETCD进行选主**
+
+ELECT 参加指定的选举。 一个客户端通过设置提案值来宣布要参加选举。如果客户端希望观察选举，ELECT会监听新的领导者值。当leader选出之后，将输出提案值。
 
 #### Options
 
-- listen -- observe the election.
+- listen -- 观察选举。
 
 #### Output
 
-- If a candidate, ELECT displays the GET on the leader key once the node is elected election.
+- 如果客户端参加选举，一旦客户端当选时ELECT将显示leader的key。
 
-- If observing, ELECT streams the result for a GET on the leader key for the current election and all future elections.
+- 如果客户端观察选举，ELECT将显示当前leader的key和所有未来的选举出的leader的key。
 
 #### Example
 
@@ -1146,9 +1144,10 @@ Whenever a leader is elected, its proposal is given as output.
 
 #### Remarks
 
-ELECT returns a zero exit code only if it is terminated by a signal and can revoke its candidacy or leadership, if any.
+ELECT 仅在被信号终止并且撤销了它的候选资格或领导权（如果有）时返回零退出代码。
 
 If a candidate is abnormally terminated, election rogress may be delayed by up to the default lease length of 60 seconds.
+如果候选者是被异常终止的，选举进程可能会延迟最多60秒(默认租约时长)。
 
 ## Authentication commands
 

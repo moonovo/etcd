@@ -1464,27 +1464,27 @@ RPC: UserRevokeRole
 
 ### MAKE-MIRROR [options] \<destination\>
 
-[make-mirror][mirror] mirrors a key prefix in an etcd cluster to a destination etcd cluster.
+[make-mirror][mirror] 将etcd集群中的key前缀镜像到目标 etcd 集群。
 
 #### Options
 
-- dest-cacert -- TLS certificate authority file for destination cluster
+- dest-cacert -- 目标集群的TLS CA证书
 
-- dest-cert -- TLS certificate file for destination cluster
+- dest-cert -- 目标集群的TLS证书文件
 
-- dest-key -- TLS key file for destination cluster
+- dest-key -- 目标集群的TLS密钥文件
 
-- prefix -- The key-value prefix to mirror
+- prefix -- 要镜像的kye-value前缀
 
-- dest-prefix -- The destination prefix to mirror a prefix to a different prefix in the destination cluster
+- dest-prefix -- 目前集群的目标最先 将前缀镜像到目标集群中不同前缀的目标前缀 The destination prefix to mirror a prefix to a different prefix in the destination cluster
 
 - no-dest-prefix -- Mirror key-values to the root of the destination cluster
 
-- dest-insecure-transport -- Disable transport security for client connections
+- dest-insecure-transport -- 禁用客户端连接的传输安全
 
 #### Output
 
-The approximate total number of keys transferred to the destination cluster, updated every 30 seconds.
+传输到目标集群的大致key总数，每30秒更新一次。
 
 #### Examples
 

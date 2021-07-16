@@ -869,7 +869,7 @@ RPC: Alarm
 
 #### Output
 
-`alarm:<alarm type>` if alarm is present and disarmed.
+如果存在告警并解除则输出`alarm:<alarm type>`。
 
 #### Examples
 
@@ -877,7 +877,7 @@ RPC: Alarm
 ./etcdctl alarm disarm
 ```
 
-If NOSPACE alarm is present:
+如果存在NOSPACE告警：
 
 ```bash
 ./etcdctl alarm disarm
@@ -886,13 +886,13 @@ If NOSPACE alarm is present:
 
 ### ALARM LIST
 
-`alarm list` lists all alarms.
+`alarm list` 列出所有告警。
 
 RPC: Alarm
 
 #### Output
 
-`alarm:<alarm type>` if alarm is present, empty string if no alarms present.
+如果存在告警则输出`alarm:<alarm type>` 。如果不存在则输出空字符串
 
 #### Examples
 
@@ -900,7 +900,7 @@ RPC: Alarm
 ./etcdctl alarm list
 ```
 
-If NOSPACE alarm is present:
+如果存在NOSPACE告警：
 
 ```bash
 ./etcdctl alarm list
@@ -911,17 +911,19 @@ If NOSPACE alarm is present:
 
 DEFRAG defragments the backend database file for a set of given endpoints while etcd is running, or directly defragments an etcd data directory while etcd is not running. When an etcd member reclaims storage space from deleted and compacted keys, the space is kept in a free list and the database file remains the same size. By defragmenting the database, the etcd member releases this free space back to the file system.
 
-**Note that defragmentation to a live member blocks the system from reading and writing data while rebuilding its states.**
+DEFRAG 在etcd运行时对一组endpoint的后端数据库文件进行碎片整理，或者在etcd未运行时直接对etcd数据目录进行碎片整理。 当etcd成员从已删除和压缩的键中回收存储空间时，该空间将保留在空闲列表中，并且数据库文件的大小保持不变。通过对数据库进行碎片整理，etcd成员将空闲空间释放给文件系统。
 
-**Note that defragmentation request does not get replicated over cluster. That is, the request is only applied to the local node. Specify all members in `--endpoints` flag or `--cluster` flag to automatically find all cluster members.**
+**请注意，对活动成员进行碎片整理会重建其状态，会阻塞读取和写入数据。**
+
+**请注意，碎片整理请求不会复制到集群中其他节点。 也就是说，请求只应用于本地节点。 可以在`--endpoints` 中指定所有成员，或者使用 `--cluster`自动查找所有集群成员。**
 
 #### Options
 
-- data-dir -- Optional. If present, defragments a data directory not in use by etcd.
+- data-dir -- 可选的。 如果存在，则对etcd未使用的数据目录进行碎片整理。
 
 #### Output
 
-For each endpoints, prints a message indicating whether the endpoint was successfully defragmented.
+对于每个endpoint，打印一条消息，指示endpoint是否已成功进行碎片整理。
 
 #### Example
 
@@ -931,7 +933,7 @@ For each endpoints, prints a message indicating whether the endpoint was success
 # Failed to defragment etcd member[badendpoint:2379] (grpc: timed out trying to connect)
 ```
 
-Run defragment operations for all endpoints in the cluster associated with the default endpoint:
+为与默认endpoint关联的集群中的所有endpoint运行碎片整理操作：
 
 ```bash
 ./etcdctl defrag --cluster
@@ -940,7 +942,7 @@ Finished defragmenting etcd member[http://127.0.0.1:22379]
 Finished defragmenting etcd member[http://127.0.0.1:32379]
 ```
 
-To defragment a data directory directly, use the `--data-dir` flag:
+要直接对数据目录进行碎片整理，请使用 `--data-dir`：
 
 ``` bash
 # Defragment while etcd is not running
@@ -951,65 +953,65 @@ To defragment a data directory directly, use the `--data-dir` flag:
 
 #### Remarks
 
-DEFRAG returns a zero exit code only if it succeeded defragmenting all given endpoints.
+DEFRAG 仅当对所有给定endpoint成功进行碎片整理时才返回零退出代码。
 
 ### SNAPSHOT \<subcommand\>
 
-SNAPSHOT provides commands to restore a snapshot of a running etcd server into a fresh cluster.
+SNAPSHOT 提供将正在运行的etcd服务器的快照恢复到新集群中的命令。
 
 ### SNAPSHOT SAVE \<filename\>
 
-SNAPSHOT SAVE writes a point-in-time snapshot of the etcd backend database to a file.
+SNAPSHOT SAVE 将etcd后端数据库的快照写入到一个文件中。
 
 #### Output
 
-The backend snapshot is written to the given file path.
+后端快照写入到指定的文件路径。
 
 #### Example
 
-Save a snapshot to "snapshot.db":
+保存快照到 "snapshot.db":
 ```
 ./etcdctl snapshot save snapshot.db
 ```
 
 ### SNAPSHOT RESTORE [options] \<filename\>
 
-SNAPSHOT RESTORE creates an etcd data directory for an etcd cluster member from a backend database snapshot and a new cluster configuration. Restoring the snapshot into each member for a new cluster configuration will initialize a new etcd cluster preloaded by the snapshot data.
+SNAPSHOT RESTORE 使用后端数据库的快照和新集群的配置创建一个etcd数据库目录。 从后端数据库快照和新的集群配置为 etcd 集群成员创建一个 etcd 数据目录。 新集群的每个成员都使用快照恢复，新集群配置将初始化一个新的由快照预加载的etcd集群。
 
 #### Options
 
-The snapshot restore options closely resemble to those used in the `etcd` command for defining a cluster.
+恢复快照的选项与`etcd` 命令中用来定义集群选项非常相似。
 
-- data-dir -- Path to the data directory. Uses \<name\>.etcd if none given.
+- data-dir -- 数据目录的路径。 如果没有给出，则使用 \<name\>.etcd。
 
-- wal-dir -- Path to the WAL directory. Uses data directory if none given.
+- wal-dir -- WAL 目录的路径。 如果没有给出，则使用数据目录。
 
-- initial-cluster -- The initial cluster configuration for the restored etcd cluster.
+- initial-cluster -- 恢复的 etcd 集群的初始集群配置。
 
-- initial-cluster-token -- Initial cluster token for the restored etcd cluster.
+- initial-cluster-token -- 已恢复的etcd集群的初始集群token。
 
-- initial-advertise-peer-urls -- List of peer URLs for the member being restored.
+- initial-advertise-peer-urls -- 正在恢复的成员的peer URL列表。
 
-- name -- Human-readable name for the etcd cluster member being restored.
+- name -- 正在恢复的etcd集群成员的名称。
 
-- skip-hash-check -- Ignore snapshot integrity hash value (required if copied from data directory)
+- skip-hash-check -- 忽略快照完整性哈希值（如果快照是从数据目录复制的则需要）
 
 #### Output
 
-A new etcd data directory initialized with the snapshot.
+使用快照初始化的新etcd数据目录。
 
 #### Example
 
-Save a snapshot, restore into a new 3 node cluster, and start the cluster:
+保存快照，恢复到新的3节点集群，然后启动集群：
 ```
 ./etcdctl snapshot save snapshot.db
 
-# restore members
+# 恢复成员
 bin/etcdctl snapshot restore snapshot.db --initial-cluster-token etcd-cluster-1 --initial-advertise-peer-urls http://127.0.0.1:12380  --name sshot1 --initial-cluster 'sshot1=http://127.0.0.1:12380,sshot2=http://127.0.0.1:22380,sshot3=http://127.0.0.1:32380'
 bin/etcdctl snapshot restore snapshot.db --initial-cluster-token etcd-cluster-1 --initial-advertise-peer-urls http://127.0.0.1:22380  --name sshot2 --initial-cluster 'sshot1=http://127.0.0.1:12380,sshot2=http://127.0.0.1:22380,sshot3=http://127.0.0.1:32380'
 bin/etcdctl snapshot restore snapshot.db --initial-cluster-token etcd-cluster-1 --initial-advertise-peer-urls http://127.0.0.1:32380  --name sshot3 --initial-cluster 'sshot1=http://127.0.0.1:12380,sshot2=http://127.0.0.1:22380,sshot3=http://127.0.0.1:32380'
 
-# launch members
+# 运行成员
 bin/etcd --name sshot1 --listen-client-urls http://127.0.0.1:2379 --advertise-client-urls http://127.0.0.1:2379 --listen-peer-urls http://127.0.0.1:12380 &
 bin/etcd --name sshot2 --listen-client-urls http://127.0.0.1:22379 --advertise-client-urls http://127.0.0.1:22379 --listen-peer-urls http://127.0.0.1:22380 &
 bin/etcd --name sshot3 --listen-client-urls http://127.0.0.1:32379 --advertise-client-urls http://127.0.0.1:32379 --listen-peer-urls http://127.0.0.1:32380 &
@@ -1017,17 +1019,17 @@ bin/etcd --name sshot3 --listen-client-urls http://127.0.0.1:32379 --advertise-c
 
 ### SNAPSHOT STATUS \<filename\>
 
-SNAPSHOT STATUS lists information about a given backend database snapshot file.
+SNAPSHOT STATUS 列出给定后端数据库快照文件的信息。
 
 #### Output
 
 ##### Simple format
 
-Prints a humanized table of the database hash, revision, total keys, and size.
+打印数据库hash、版本、键数量和大小。
 
 ##### JSON format
 
-Prints a line of JSON encoding the database hash, revision, total keys, and size.
+已JSON格式打印数据库hash、版本、键数量和大小。
 
 #### Examples
 ```bash
@@ -1051,23 +1053,23 @@ Prints a line of JSON encoding the database hash, revision, total keys, and size
 
 ### MOVE-LEADER \<hexadecimal-transferee-id\>
 
-MOVE-LEADER transfers leadership from the leader to another member in the cluster.
+MOVE-LEADER 切换leader。
 
 #### Example
 
 ```bash
-# to choose transferee
+# 选择一个即将成为leader的member
 transferee_id=$(./etcdctl \
   --endpoints localhost:2379,localhost:22379,localhost:32379 \
   endpoint status | grep -m 1 "false" | awk -F', ' '{print $2}')
 echo ${transferee_id}
 # c89feb932daef420
 
-# endpoints should include leader node
+# endpoints应该包含leader节点
 ./etcdctl --endpoints ${transferee_ep} move-leader ${transferee_id}
 # Error:  no leader endpoint given at [localhost:22379 localhost:32379]
 
-# request to leader with target node ID
+# 将leader切换到指定member ID
 ./etcdctl --endpoints ${leader_ep} move-leader ${transferee_id}
 # Leadership transferred from 45ddc0e800e20b93 to c89feb932daef420
 ```

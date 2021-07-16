@@ -633,25 +633,25 @@ RPC: LeaseKeepAlive
 ...
 ```
 
-## Cluster maintenance commands
+## 集群维护命令
 
 ### MEMBER \<subcommand\>
 
-MEMBER provides commands for managing etcd cluster membership.
+MEMBER 提供了管理 etcd 集群成员的命令。
 
 ### MEMBER ADD \<memberName\> [options]
 
-MEMBER ADD introduces a new member into the etcd cluster as a new peer.
+MEMBER ADD 给etcd添加新的成员。
 
 RPC: MemberAdd
 
 #### Options
 
-- peer-urls -- comma separated list of URLs to associate with the new member.
+- peer-urls -- 新成员的url列表，使用逗号分隔。
 
 #### Output
 
-Prints the member ID of the new member and the cluster ID.
+输出新成员的成员ID和集群ID。
 
 #### Example
 
@@ -667,19 +667,18 @@ ETCD_INITIAL_CLUSTER_STATE="existing"
 
 ### MEMBER UPDATE \<memberID\> [options]
 
-MEMBER UPDATE sets the peer URLs for an existing member in the etcd cluster.
+MEMBER UPDATE 设置etcd集群中已存在成员的url。
 
 RPC: MemberUpdate
 
 #### Options
 
-- peer-urls -- comma separated list of URLs to associate with the updated member.
+- peer-urls -- 需更新成员的url列表，以逗号分隔。
+#### 输出
 
-#### Output
+打印已更新成员的成员ID和集群ID。
 
-Prints the member ID of the updated member and the cluster ID.
-
-#### Example
+#### 样例
 
 ```bash
 ./etcdctl member update 2be1eb8f84b7f63e --peer-urls=https://127.0.0.1:11112
@@ -688,15 +687,15 @@ Prints the member ID of the updated member and the cluster ID.
 
 ### MEMBER REMOVE \<memberID\>
 
-MEMBER REMOVE removes a member of an etcd cluster from participating in cluster consensus.
+MEMBER REMOVE 从etcd集群中移除一个成员。
 
 RPC: MemberRemove
 
-#### Output
+#### 输出
 
-Prints the member ID of the removed member and the cluster ID.
+打印已移除成员的成员ID和集群ID。
 
-#### Example
+#### 样例
 
 ```bash
 ./etcdctl member remove 2be1eb8f84b7f63e
@@ -705,13 +704,13 @@ Prints the member ID of the removed member and the cluster ID.
 
 ### MEMBER LIST
 
-MEMBER LIST prints the member details for all members associated with an etcd cluster.
+MEMBER LIST 打印etcd集群中所有成员的详细信息。
 
 RPC: MemberList
 
 #### Output
 
-Prints a humanized table of the member IDs, statuses, names, peer addresses, and client addresses.
+打印成员ID、状态、名称、peer地址和客户端地址的可读表格。
 
 #### Examples
 
@@ -740,31 +739,31 @@ Prints a humanized table of the member IDs, statuses, names, peer addresses, and
 
 ### ENDPOINT \<subcommand\>
 
-ENDPOINT provides commands for querying individual endpoints.
+ENDPOINT 提供了查询单个endpoint的命令。
 
 #### Options
 
-- cluster -- fetch and use all endpoints from the etcd cluster member list
+- cluster -- 从etcd集群成员列表中获取并使用所有endpoint
 
 ### ENDPOINT HEALTH
 
-ENDPOINT HEALTH checks the health of the list of endpoints with respect to cluster. An endpoint is unhealthy
-when it cannot participate in consensus with the rest of the cluster.
+ENDPOINT HEALTH 检查集群所有endpoint的健康状态。如果endpoint不健康，表示它无法参与到集群其他endpoint的共识算法中。
 
 #### Output
 
+如果端点可以参与共识算法，则打印endpoint健康的。 如果端点未能参与共识，则打印endpoint不健康。
 If an endpoint can participate in consensus, prints a message indicating the endpoint is healthy. If an endpoint fails to participate in consensus, prints a message indicating the endpoint is unhealthy.
 
 #### Example
 
-Check the default endpoint's health:
+检查默认endpoint的健康状态：
 
 ```bash
 ./etcdctl endpoint health
 # 127.0.0.1:2379 is healthy: successfully committed proposal: took = 2.095242ms
 ```
 
-Check all endpoints for the cluster associated with the default endpoint:
+检查与默认endpoint关联的集群的所有endpoint：
 
 ```bash
 ./etcdctl endpoint --cluster health
@@ -775,35 +774,34 @@ Check all endpoints for the cluster associated with the default endpoint:
 
 ### ENDPOINT STATUS
 
-ENDPOINT STATUS queries the status of each endpoint in the given endpoint list.
+ENDPOINT STATUS 查询给定endpoint列表中每个endpoint的状态。
 
 #### Output
 
 ##### Simple format
 
-Prints a humanized table of each endpoint URL, ID, version, database size, leadership status, raft term, and raft status.
+打印每个endpoint的URL、ID、版本、数据库大小、leader状态、raft任期和raft状态的可读表格。
 
 ##### JSON format
 
-Prints a line of JSON encoding each endpoint URL, ID, version, database size, leadership status, raft term, and raft status.
+打印每个endpoint的URL、ID、版本、数据库大小、leader状态、raft任期和raft状态的一行JSON编码。
 
 #### Examples
 
-Get the status for the default endpoint:
+获取默认endpoint的状态：
 
 ```bash
 ./etcdctl endpoint status
 # 127.0.0.1:2379, 8211f1d0f64f3269, 3.0.0, 25 kB, false, 2, 63
 ```
 
-Get the status for the default endpoint as JSON:
+以 JSON 形式获取默认endpoint的状态：
 
 ```bash
 ./etcdctl -w json endpoint status
 # [{"Endpoint":"127.0.0.1:2379","Status":{"header":{"cluster_id":17237436991929493444,"member_id":9372538179322589801,"revision":2,"raft_term":2},"version":"3.0.0","dbSize":24576,"leader":18249187646912138824,"raftIndex":32623,"raftTerm":2}}]
 ```
-
-Get the status for all endpoints in the cluster associated with the default endpoint:
+获取集群中与默认endpoint关联的所有endpoint的状态：
 
 ```bash
 ./etcdctl -w table endpoint --cluster status
@@ -818,35 +816,35 @@ Get the status for all endpoints in the cluster associated with the default endp
 
 ### ENDPOINT HASHKV
 
-ENDPOINT HASHKV fetches the hash of the key-value store of an endpoint.
+ENDPOINT HASHKV 获取一个endPoint的key-value的hash值。
 
 #### Output
 
 ##### Simple format
 
-Prints a humanized table of each endpoint URL and KV history hash.
+打印每个endpoint的URL和KV历史hash值。
 
 ##### JSON format
 
-Prints a line of JSON encoding each endpoint URL and KV history hash.
+以JSON格式打印每个endpoint的URL和KV历史hash值。
 
 #### Examples
 
-Get the hash for the default endpoint:
+获取默认endpoint的hash：
 
 ```bash
 ./etcdctl endpoint hashkv
 # 127.0.0.1:2379, 1084519789
 ```
 
-Get the status for the default endpoint as JSON:
+以 JSON 形式获取默认endpoint的状态：
 
 ```bash
 ./etcdctl -w json endpoint hashkv
 # [{"Endpoint":"127.0.0.1:2379","Hash":{"header":{"cluster_id":14841639068965178418,"member_id":10276657743932975437,"revision":1,"raft_term":3},"hash":1084519789,"compact_revision":-1}}]
 ```
 
-Get the status for all endpoints in the cluster associated with the default endpoint:
+获取集群中与默认endpoint关联的所有endpoint的hash：
 
 ```bash
 ./etcdctl -w table endpoint --cluster hashkv
@@ -861,11 +859,11 @@ Get the status for all endpoints in the cluster associated with the default endp
 
 ### ALARM \<subcommand\>
 
-Provides alarm related commands
+提供了告警相关命令
 
 ### ALARM DISARM
 
-`alarm disarm` Disarms all alarms
+`alarm disarm` 解除所有告警
 
 RPC: Alarm
 

@@ -1074,39 +1074,41 @@ echo ${transferee_id}
 # Leadership transferred from 45ddc0e800e20b93 to c89feb932daef420
 ```
 
-## Concurrency commands
+## 并发命令
 
 ### LOCK [options] \<lockname\> [command arg1 arg2 ...]
 
-LOCK acquires a distributed mutex with a given name. Once the lock is acquired, it will be held until etcdctl is terminated.
+LOCK 获取具有给定名称的分布式互斥锁。 一旦获得了锁，它就会一直保持到 etcdctl 终止。
 
 #### Options
 
-- ttl - time out in seconds of lock session.
+- ttl - 锁定会话的超时秒数超时。
 
 #### Output
 
 Once the lock is acquired but no command is given, the result for the GET on the unique lock holder key is displayed.
+如果获取了锁但没有给出命令，就会显示对已锁的key的GET结果。
 
 If a command is given, it will be executed with environment variables `ETCD_LOCK_KEY` and `ETCD_LOCK_REV` set to the lock's holder key and revision.
+如果给出命令，此命令可以使用"ETCD_LOCK_KEY"和"ETCD_LOCK_REV"环境变量来获取已锁的key及其版本。
 
 #### Example
 
-Acquire lock with standard output display:
+使用标准输出显示获取锁：
 
 ```bash
 ./etcdctl lock mylock
 # mylock/1234534535445
 ```
 
-Acquire lock and execute `echo lock acquired`:
+获取锁并执行`echo lock acquired`:
 
 ```bash
 ./etcdctl lock mylock echo lock acquired
 # lock acquired
 ```
 
-Acquire lock and execute `etcdctl put` command
+获取锁并执行`etcdctl put`命令
 ```bash
 ./etcdctl lock mylock ./etcdctl put foo bar
 # OK
@@ -1114,9 +1116,9 @@ Acquire lock and execute `etcdctl put` command
 
 #### Remarks
 
-LOCK returns a zero exit code only if it is terminated by a signal and releases the lock.
+LOCK 仅在被信号终止并释放锁时才返回零退出代码。
 
-If LOCK is abnormally terminated or fails to contact the cluster to release the lock, the lock will remain held until the lease expires. Progress may be delayed by up to the default lease length of 60 seconds.
+如果LOCK异常终止或无法连接到集群来释放锁，锁会一直保持，直到租约过期。默认60s租约过期。
 
 ### ELECT [options] \<election-name\> [proposal]
 

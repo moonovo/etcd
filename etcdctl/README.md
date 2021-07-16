@@ -1460,7 +1460,7 @@ RPC: UserRevokeRole
 # Role roleA is revoked from user userA
 ```
 
-## Utility commands
+## 实用命令
 
 ### MAKE-MIRROR [options] \<destination\>
 

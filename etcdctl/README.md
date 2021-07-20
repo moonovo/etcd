@@ -1499,22 +1499,23 @@ RPC: UserRevokeRole
 ### MIGRATE [options]
 
 Migrates keys in a v2 store to a v3 mvcc store. Users should run migration command for all members in the cluster.
+将v2存储中的key迁移到v3 mvcc存储中。 用户应该为集群中的所有成员运行迁移命令。
 
 #### Options
 
-- data-dir -- Path to the data directory
+- data-dir -- 数据目录的路径
 
-- wal-dir -- Path to the WAL directory
+- wal-dir -- WAL目录的路径
 
-- transformer -- Path to the user-provided transformer program (default if not provided)
+- transformer -- 用户提供的转换器程序的路径（如果未提供，则为默认值）
 
 #### Output
 
-No output on success.
+成功没有输出。
 
-#### Default transformer
+#### 默认的转换器
 
-If user does not provide a transformer program, migrate command will use the default transformer. The default transformer transforms `storev2` formatted keys into `mvcc` formatted keys according to the following Go program:
+如果用户不提供转换器程序，迁移命令将使用默认转换器。 默认转换器根据以下Go程序将 `storev2` 格式的key转换为 `mvcc` 格式的key：
 
 ```go
 func transform(n *storev2.Node) *mvccpb.KeyValue {
@@ -1532,11 +1533,11 @@ func transform(n *storev2.Node) *mvccpb.KeyValue {
 }
 ```
 
-#### User-provided transformer
+#### 用户提供的转换器
 
-Users can provide a customized 1:n transformer function that transforms a key from the v2 store to any number of keys in the mvcc store. The migration program writes JSON formatted [v2 store keys][v2key] to the transformer program's stdin, reads protobuf formatted [mvcc keys][v3key] back from the transformer program's stdout, and finishes migration by saving the transformed keys into the mvcc store.
+用户可以提供自定义的1:n转换函数，将v2存储中的key转换为mvcc存储中任意数量的key。 迁移程序将JSON格式的[v2 store keys][v2key]写入到转换器程序的标准输入中，从转换器程序的标准输出中读回 protobuf 格式的[mvcc keys][v3key]，并将转换后的key保存到mvcc存储中来完成迁移。
 
-The provided transformer should read until EOF and flush the stdout before exiting to ensure data integrity.
+提供的转换器应该读取到EOF并在退出之前刷新stdout以确保数据完整性。
 
 #### Example
 
@@ -1547,11 +1548,11 @@ The provided transformer should read until EOF and flush the stdout before exiti
 
 ### VERSION
 
-Prints the version of etcdctl.
+打印etcdctl的版本。
 
 #### Output
 
-Prints etcd version and API version.
+打印etcd版本和 API 版本。
 
 #### Examples
 
@@ -1563,31 +1564,31 @@ Prints etcd version and API version.
 
 ### CHECK \<subcommand\>
 
-CHECK provides commands for checking properties of the etcd cluster.
+CHECK 提供用于检查 etcd 集群属性的命令。
 
 ### CHECK PERF [options]
 
-CHECK PERF checks the performance of the etcd cluster for 60 seconds. Running the `check perf` often can create a large keyspace history which can be auto compacted and defragmented using the `--auto-compact` and `--auto-defrag` options as described below.
+CHECK PERF 检查etcd集群的性能 60 秒。 运行 `check perf` 通常会创建一个很大的key空间历史记录，可以使用如下所述的`--auto-compact` 和 `--auto-defrag` 选项自动压缩和整理碎片。
 
 RPC: CheckPerf
 
 #### Options
 
-- load -- the performance check's workload model. Accepted workloads: s(small), m(medium), l(large), xl(xLarge)
+- load -- 性能检查的工作负载模型。 可接受的工作负载有：s(small)、m(medium)、l(large)、xl(xLarge)
 
-- prefix -- the prefix for writing the performance check's keys.
+- prefix -- 写入性能检查key的前缀。
 
-- auto-compact -- if true, compact storage with last revision after test is finished.
+- auto-compact -- 如果为真，则在测试完成后使用最新版本进行压缩存储。
 
-- auto-defrag -- if true, defragment storage after test is finished.
+- auto-defrag -- 如果为真，则在测试完成后对存储进行碎片整理。
 
 #### Output
 
-Prints the result of performance check on different criteria like throughput. Also prints an overall status of the check as pass or fail.
+打印性能检查结果，如吞吐量等标准。也会打印总体的检查结果是通过还是失败。
 
 #### Examples
 
-Shows examples of both, pass and fail, status. The failure is due to the fact that a large workload was tried on a single node etcd cluster running on a laptop environment created for development and testing purpose.
+下面是成功和失败的样例。失败的原因为在笔记本电脑环境创建笔了单节点etcd集群，它是为了开发和测试创建的，但尝试运行大量工作负载。
 
 ```bash
 ./etcdctl check perf --load="s"
@@ -1606,23 +1607,23 @@ Shows examples of both, pass and fail, status. The failure is due to the fact th
 
 ### CHECK DATASCALE [options]
 
-CHECK DATASCALE checks the memory usage of holding data for different workloads on a given server endpoint. Running the `check datascale` often can create a large keyspace history which can be auto compacted and defragmented using the `--auto-compact` and `--auto-defrag` options as described below.
+CHECK DATASCALE 在不同的工作负载情况下检查给定的服务器endpoint的内存使用情况。 运行 `check datascale` 通常会创建一个很大的key空间历史记录，可以使用如下所述的`--auto-compact` 和 `--auto-defrag` 选项自动压缩和整理碎片。
 
 RPC: CheckDatascale
 
 #### Options
 
-- load -- the datascale check's workload model. Accepted workloads: s(small), m(medium), l(large), xl(xLarge)
+- load -- 数据规模检查的工作负载模型。可接受的工作负载有：s(small)、m(medium)、l(large)、xl(xLarge)。
 
-- prefix -- the prefix for writing the datascale check's keys.
+- prefix -- 数据规格检查key的前缀。
 
-- auto-compact -- if true, compact storage with last revision after test is finished.
+- auto-compact -- 如果为真，则在测试完成后使用最新版本进行压缩存储。
 
-- auto-defrag -- if true, defragment storage after test is finished.
+- auto-defrag -- 如果为真，则在测试完成后对存储进行碎片整理。
 
 #### Output
 
-Prints the system memory usage for a given workload. Also prints status of compact and defragment if related options are passed.
+打印给定工作负载的系统内存使用情况。 如果通过了相关选项，还会打印压缩和碎片整理的状态。
 
 #### Examples
 
@@ -1638,47 +1639,48 @@ Prints the system memory usage for a given workload. Also prints status of compa
 
 ## Exit codes
 
-For all commands, a successful execution return a zero exit code. All failures will return non-zero exit codes.
+对于所有命令，成功执行返回零退出代码。 所有失败都将返回非零退出代码。
 
 ## Output formats
 
-All commands accept an output format by setting `-w` or `--write-out`. All commands default to the "simple" output format, which is meant to be human-readable. The simple format is listed in each command's `Output` description since it is customized for each command. If a command has a corresponding RPC, it will respect all output formats.
+所有命令都通过`-w` 或`--write-out` 来设置输出格式。 所有命令默认为"simple"输出格式，这是人类可读的。 simple格式列在每个命令的`Output`描述中，因为它是为每个命令定制的。 如果命令有相应的 RPC，它有所有输出格式。
 
-If a command fails, returning a non-zero exit code, an error string will be written to standard error regardless of output format.
+如果命令失败，返回非零退出码，无论输出格式如何，都会将错误字符串写入到标准错误。
 
 ### Simple
 
-A format meant to be easy to parse and human-readable. Specific to each command.
+一种易于解析和人类可读的格式。 每个命令都可指定。
 
 ### JSON
 
-The JSON encoding of the command's [RPC response][etcdrpc]. Since etcd's RPCs use byte strings, the JSON output will encode keys and values in base64.
+命令的[RPC response][etcdrpc]的JSON编码。因为etcd的RPC使用字节，所以JSON输出将会对key和value进行base64编码。
 
-Some commands without an RPC also support JSON; see the command's `Output` description.
+一些没用RPC的命令也支持 SON； 请参阅命令的`Output` 说明。
+
 
 ### Protobuf
 
-The protobuf encoding of the command's [RPC response][etcdrpc]. If an RPC is streaming, the stream messages will be concetenated. If an RPC is not given for a command, the protobuf output is not defined.
+命令的 [RPC 响应][etcdrpc] 的 protobuf 编码。 如果 RPC 正在流式传输，则流消息将被合并。 如果未为命令提供RPC，则protobuf输出不生效。
 
 ### Fields
 
-An output format similar to JSON but meant to parse with coreutils. For an integer field named `Field`, it writes a line in the format `"Field" : %d` where `%d` is go's integer formatting. For byte array fields, it writes `"Field" : %q` where `%q` is go's quoted string formatting (e.g., `[]byte{'a', '\n'}` is written as `"a\n"`).
+类似于JSON的输出格式，旨在可以用coreutils进行解析。 对于名为`Field`的整数字段，它以`"Field" : %d`格式写入一行，其中`%d`是go的整数格式。 对于字节数组字段，它写为 `"Field" : %q`，其中 `%q` 是go的加引号的字符串格式（例如，`[]byte{'a', '\n'}` 写为 `"a\n"`)。
 
-## Compatibility Support
+## 兼容性支持
 
-etcdctl is still in its early stage. We try out best to ensure fully compatible releases, however we might break compatibility to fix bugs or improve commands. If we intend to release a version of etcdctl with backward incompatibilities, we will provide notice prior to release and have instructions on how to upgrade.
+etcdctl仍处于早期阶段。 我们尽最大努力确保完全兼容的版本，但是我们可能会破坏兼容性以修复错误或改进命令。 如果我们打算发布向后不兼容的etcdctl版本，我们将在发布前提供通知并提供如何升级的说明。
 
-### Input Compatibility
+### 输入兼容性
 
-Input includes the command name, its flags, and its arguments. We ensure backward compatibility of the input of normal commands in non-interactive mode.
+输入包括命令名称、选项及参数。 我们确保在非交互式下输入普通命令的向后兼容性。
 
-### Output Compatibility
+### 输出兼容性
 
-Output includes output from etcdctl and its exit code. etcdctl provides `simple` output format by default.
-We ensure compatibility for the `simple` output format of normal commands in non-interactive mode. Currently, we do not ensure
-backward compatibility for `JSON` format and the format in non-interactive mode. Currently, we do not ensure backward compatibility of utility commands.
+输出包括来自etcdctl的输出及其退代码。 etcdctl默认提供`simple`输出格式。
+我们确保在非交互式下与普通命令的`simple`输出格式兼容。 
+目前，我们不确保`JSON`格式和非交互模式下的格式的向后兼容性。目前，我们不确保实用程序命令的向后兼容性。.
 
-### TODO: compatibility with etcd server
+### TODO: 与etcd服务器的兼容性
 
 [etcd]: https://github.com/coreos/etcd
 [READMEv2]: READMEv2.md
